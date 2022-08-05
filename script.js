@@ -78,31 +78,59 @@ function renderProducers(data) {
  **************/
 
 function getProducerById(data, producerId) {
-  // your code here
+  let producers = data.producers;
+  return producers.filter(elem => elem.id === producerId ? true: false)[0]
 }
 
 function canAffordProducer(data, producerId) {
-  // your code here
+  return (getProducerById(data, producerId).price <= data.coffee) ? true: false
+  
 }
 
 function updateCPSView(cps) {
-  // your code here
+  let cpsElem = document.getElementById('cps');
+  cpsElem.innerText = cps;
 }
 
 function updatePrice(oldPrice) {
-  // your code here
+  return Math.floor(oldPrice *1.25);
 }
 
 function attemptToBuyProducer(data, producerId) {
-  // your code here
+  let canAfford = canAffordProducer(data, producerId);
+  let producer = getProducerById(data, producerId);
+  if(canAfford) {
+    producer.qty ++;
+    data.coffee -= producer.price;
+    producer.price = updatePrice(producer.price);
+    data.totalCPS += producer.cps;
+  }
+  return canAfford;
+    
 }
 
 function buyButtonClick(event, data) {
-  // your code here
+  if(event.target.tagName === 'BUTTON') {
+    let id = event.target.id.slice(4);
+    let canAfford = false;
+    canAfford = attemptToBuyProducer(data, id);
+    if(canAfford){
+      renderProducers(data);
+      updateCoffeeView(data.coffee);
+      updateCPSView(data.totalCPS);
+    }else{
+      window.alert('Not enough coffee!');
+    }
+  }
+  
+  
+  
 }
 
 function tick(data) {
-  // your code here
+  data.coffee += data.totalCPS;
+  updateCoffeeView(data.coffee);
+  renderProducers(data);
 }
 
 /*************************
