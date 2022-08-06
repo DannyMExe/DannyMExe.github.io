@@ -28,9 +28,7 @@ function unlockProducers(producers, coffeeCount) {
 
 function getUnlockedProducers(data) {
   return data.producers.filter(elem => {
-    if(elem.unlocked) {
-      return true;
-    }
+    return elem.unlocked ? true: false
   })
 }
 
@@ -97,9 +95,9 @@ function updatePrice(oldPrice) {
   return Math.floor(oldPrice *1.25);
 }
 
-function updatePriceSell(oldPrice) {
-  return Math.ceil(oldPrice * .8);
-}
+// function updatePriceSell(oldPrice) {
+//   return Math.ceil(oldPrice * .8);
+// }
 
 function attemptToBuyProducer(data, producerId) {
   let canAfford = canAffordProducer(data, producerId);
@@ -111,25 +109,24 @@ function attemptToBuyProducer(data, producerId) {
     data.totalCPS += producer.cps;
   }
   return canAfford;
-    
 }
 
-function attemptToSellProducer(data, producerId) {
-  // let canAfford = canAffordProducer(data, producerId);
-  let producer = getProducerById(data, producerId);
-  let canAfford=false;
-  if(producer.qty > 0) {
-    canAfford=true;
-    producer.qty --;
-    data.coffee += Math.ceil(producer.price * .75);
-    producer.price = updatePriceSell(producer.price);
-    data.totalCPS -= producer.cps;
-  }
-  return canAfford;
-}
+// function attemptToSellProducer(data, producerId) {
+//   // let canAfford = canAffordProducer(data, producerId);
+//   let producer = getProducerById(data, producerId);
+//   let canAfford=false;
+//   if(producer.qty > 0) {
+//     canAfford=true;
+//     producer.qty --;
+//     data.coffee += Math.ceil(producer.price * .75);
+//     producer.price = updatePriceSell(producer.price);
+//     data.totalCPS -= producer.cps;
+//   }
+//   return canAfford;
+// }
 
 function buyButtonClick(event, data) {
-  if(event.target.tagName === 'BUTTON' && event.target.id.slice(0, 3) === 'buy') {
+  if(event.target.className === 'buy') {
     let id = event.target.id.slice(4);
     let canAfford = false;
     canAfford = attemptToBuyProducer(data, id);
@@ -140,38 +137,36 @@ function buyButtonClick(event, data) {
     }else{
       window.alert('Not enough coffee!');
     }
-  }
-  
-    else if(event.target.className === 'sell') {
-      let id = event.target.id.slice(5);
-      let canAfford = false;
-      canAfford = attemptToSellProducer(data, id);
-      if(canAfford) {
-        renderProducers(data);
-        updateCoffeeView(data.coffee);
-        updateCPSView(data.totalCPS);
-      } else {
-        window.alert(`Not enough ${makeDisplayNameFromId(id)} Producers`)
-      }
-  }
-  
+  } 
+  // else if(event.target.className === 'sell') {
+  //     let id = event.target.id.slice(5);
+  //     let canAfford = false;
+  //     canAfford = attemptToSellProducer(data, id);
+  //     if(canAfford) {
+  //       renderProducers(data);
+  //       updateCoffeeView(data.coffee);
+  //       updateCPSView(data.totalCPS);
+  //     } else {
+  //       window.alert(`Not enough ${makeDisplayNameFromId(id)} Producers`)
+  //     }
+  // }
 }
 
-function saveGame(data) {
-  let gameState = JSON.stringify(data)
-  window.localStorage.setItem('game', gameState)
-}
+// function saveGame(data) {
+//   let gameState = JSON.stringify(data)
+//   window.localStorage.setItem('game', gameState)
+// }
 
-function restoreGame(data) {
-  window.localStorage.clear();
-  window.location.reload();
-  
-}
+// function restoreGame(data) {
+//   let mySave = window.localStorage.getItem('game');
+//   window.data = JSON.parse(mySave);
+// }
 
 function tick(data) {
   data.coffee += data.totalCPS;
   updateCoffeeView(data.coffee);
   renderProducers(data);
+  updateCPSView(data.totalCPS);
 }
 
 /*************************
@@ -191,22 +186,18 @@ function tick(data) {
 if (typeof process === 'undefined') {
   // Get starting data from the window object
   // (This comes from data.js)
-  //const data = window.data;
-    let data = window.data
-  if(window.localStorage.getItem('game')) {
-    data = JSON.parse(window.localStorage.getItem('game'));
-  }else{
-    data = window.data;
-  }
-  updateCPSView(data.totalCPS);
-  updateCoffeeView(data.coffee);
-
-
+  let data = window.data
+  // if(window.localStorage.getItem('game')) {
+  //   data = JSON.parse(window.localStorage.getItem('game'));
+  // }else{
+  //   data = window.data;
+  // }
+  
   //Save and restore buttons
-  const save = document.getElementById('saveButton');
-  const restore = document.getElementById('restoreButton');
-  save.addEventListener('click', ()=> saveGame(data));
-  restore.addEventListener('click', ()=> restoreGame(data));
+  // const save = document.getElementById('saveButton');
+  // const restore = document.getElementById('restoreButton');
+  // save.addEventListener('click', ()=> saveGame(data));
+  // restore.addEventListener('click', ()=> restoreGame(data));
 
   // Add an event listener to the giant coffee emoji
   const bigCoffee = document.getElementById('big_coffee');
@@ -221,9 +212,6 @@ if (typeof process === 'undefined') {
 
   // Call the tick function passing in the data object once per second
   setInterval(() => tick(data), 1000);
-  
-  //Save game
-  setInterval(() => saveGame(data), 300000)
 }
 // Meanwhile, if we aren't in a browser and are instead in node
 // we'll need to exports the code written here so we can import and

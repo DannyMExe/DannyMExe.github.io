@@ -3,6 +3,7 @@
 }
 body {
   margin: 0px;
+  background-color: #FF671F;
 }
 .column-container {
   display: flex;
@@ -30,13 +31,20 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #DA1884;
+  font-weight: bold;
+}
+
+.container.right {
+  background-color: #DA1884;
 }
 
 .column-header {
   font-size: 25px;
   position: relative;
-  background-color: white;
+  color: #DA1884;
   top: 8px;
+  background-color: #653819;
 }
 #big_coffee {
   user-select: none;
@@ -67,6 +75,7 @@ body {
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
+  color: #653819;
 }
 .producer-column {
   display: flex;
